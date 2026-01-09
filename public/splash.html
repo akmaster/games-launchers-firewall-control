@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0B0E14; /* Deep Space */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #6366f1; /* Neon Indigo */
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+            user-select: none;
+            cursor: wait;
+        }
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 4px solid #151921;
+            border-bottom-color: #10b981; /* Accent Emerald */
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .logo {
+            margin-bottom: 24px;
+            font-size: 24px;
+            font-weight: 700;
+            color: #f3f4f6;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">LAUNCHER</div>
+        <div class="loader"></div>
+    </div>
+</body>
+</html>

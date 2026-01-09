@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #050505;
+  --color-surface: #0f1115;
+  --color-primary: #00f0ff;
+  --color-primary-to: #7000ff;
+  --color-accent: #00ffa3;
+
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Rajdhani', sans-serif;
+}
+
+/* Custom Utilities if needed, or just standard CSS */
+body {
+  background-color: var(--color-background);
+  color: #f3f4f6;
+  /* text-gray-100 equivalent roughly */
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
