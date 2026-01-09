@@ -30,4 +30,6 @@ tauri-plugin-dialog = "2.5.0"
 tauri-plugin-fs = "2.4.5"
 winreg = "0.52"
 indexmap = { version = "2.13.0", features = ["serde"] }
+chrono = "0.4"
+
 

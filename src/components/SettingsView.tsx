@@ -1,13 +1,30 @@
-import { Trash2, Languages, Settings as SettingsIcon } from 'lucide-react';
+import { Trash2, Languages, Settings as SettingsIcon, RefreshCw } from 'lucide-react';
+import { invoke } from '@tauri-apps/api/core';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useState } from 'react';
 
 export default function SettingsView() {
     const { strings, setLanguage, language } = useLanguage();
+    const [resetting, setResetting] = useState(false);
 
     const handleReset = () => {
         if (confirm(strings.settings.general.reset_confirm)) {
             localStorage.clear();
             location.reload();
+        }
+    };
+
+    const handleResetWizard = async () => {
+        try {
+            setResetting(true);
+            await invoke('reset_setup_wizard');
+            alert('Sihirbaz sıfırlandı! Uygulamayı yeniden başlatın.');
+            location.reload();
+        } catch (error) {
+            console.error('Failed to reset wizard:', error);
+            alert('Hata: ' + error);
+        } finally {
+            setResetting(false);
         }
     };
 
@@ -24,6 +41,34 @@ export default function SettingsView() {
             </div>
 
             <div className="max-w-4xl space-y-8">
+
+                {/* Launcher Settings Section */}
+                <section className="bg-surface border border-white/5 rounded-2xl p-6">
+                    <div className="flex items-start gap-4 mb-6">
+                        <div className="p-3 bg-primary/20 rounded-xl">
+                            <RefreshCw className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-bold text-white mb-1">🎮 Launcher Settings</h2>
+                            <p className="text-gray-400 text-sm">
+                                Launcher yollarını yeniden tespit etmek veya manuel olarak eklemek için sihirbazı kullanın
+                            </p>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={handleResetWizard}
+                        disabled={resetting}
+                        className="px-6 py-3 rounded-xl bg-primary/20 hover:bg-primary hover:text-white text-primary border border-primary/50 transition-all font-bold tracking-wider hover:shadow-[0_0_20px_-5px_rgba(var(--color-primary),0.5)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {resetting ? '⏳ Sıfırlanıyor...' : '🔄 Sihirbazı Tekrar Başlat'}
+                    </button>
+
+                    <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-sm text-gray-300">
+                        <strong className="text-blue-400">İpucu:</strong> Sihirbaz, tüm launcher'ları otomatik olarak tarar.
+                        Bulunamayan launcher'lar için manuel yol girişi yapabilirsiniz.
+                    </div>
+                </section>
 
                 {/* Language Section */}
                 <section className="bg-surface border border-white/5 rounded-2xl p-6">

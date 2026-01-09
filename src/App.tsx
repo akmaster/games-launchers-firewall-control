@@ -3,16 +3,36 @@ import { invoke } from "@tauri-apps/api/core";
 import LaunchersView from "./components/LaunchersView";
 import SettingsView from "./components/SettingsView";
 import NotesView from "./components/NotesView";
+import SetupWizard from "./components/SetupWizard";
 import { useLanguage } from "./contexts/LanguageContext";
 import LanguageSelector from "./components/LanguageSelector";
+
+interface LauncherSettings {
+  launcher_paths: Record<string, string | null>;
+  skipped_launchers: string[];
+  wizard_completed: boolean;
+  last_scan: string | null;
+}
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentView, setCurrentView] = useState<'launchers' | 'notes' | 'settings'>('launchers');
+  const [showWizard, setShowWizard] = useState(false);
+  const [checkingWizard, setCheckingWizard] = useState(true);
   const { strings, isLanguageSelected } = useLanguage();
 
   useEffect(() => {
     const initApp = async () => {
+      // Check if setup wizard is completed
+      try {
+        const settings = await invoke<LauncherSettings>('get_launcher_settings');
+        setShowWizard(!settings.wizard_completed);
+      } catch {
+        // First time running, show wizard
+        setShowWizard(true);
+      }
+      setCheckingWizard(false);
+
       // Simulate checking for updates or initializing services
       await new Promise(resolve => setTimeout(resolve, 1500));
 
@@ -25,6 +45,20 @@ function App() {
 
     initApp();
   }, []);
+
+  // Loading wizard check
+  if (checkingWizard) {
+    return (
+      <div className="h-screen w-full bg-background flex items-center justify-center">
+        <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  // Show setup wizard if not completed
+  if (showWizard) {
+    return <SetupWizard onComplete={() => setShowWizard(false)} />;
+  }
 
   // If language is not selected yet, show the selection screen
   if (!isLanguageSelected) {

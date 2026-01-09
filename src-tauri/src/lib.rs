@@ -6,6 +6,75 @@ use std::process::Command;
 #[cfg(target_os = "windows")]
 use std::os::windows::process::CommandExt;
 use serde::{Deserialize, Serialize};
+use chrono;
+
+// Launcher Detection Module
+mod launcher_detector;
+use launcher_detector::{DetectedLauncher, DetectionStatus};
+
+// ============================================
+// SETTINGS MANAGEMENT
+// ============================================
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct LauncherSettings {
+    launcher_paths: HashMap<String, Option<String>>,
+    skipped_launchers: Vec<String>,
+    wizard_completed: bool,
+    last_scan: Option<String>,
+}
+
+impl Default for LauncherSettings {
+    fn default() -> Self {
+        Self {
+            launcher_paths: HashMap::new(),
+            skipped_launchers: Vec::new(),
+            wizard_completed: false,
+            last_scan: None,
+        }
+    }
+}
+
+fn get_settings_path() -> std::path::PathBuf {
+    // Tauri v2: Use a static fallback for now.
+    // In production, this should be obtained from app_handle during runtime
+    let home = std::env::var("USERPROFILE")
+        .or_else(|_| std::env::var("HOME"))
+        .unwrap_or_else(|_| ".".to_string());
+    
+    std::path::PathBuf::from(home)
+        .join(".games-launchers-firewall")
+        .join("launcher_settings.json")
+}
+
+fn load_settings() -> LauncherSettings {
+    let path = get_settings_path();
+    if path.exists() {
+        if let Ok(content) = fs::read_to_string(&path) {
+            if let Ok(settings) = serde_json::from_str::<LauncherSettings>(&content) {
+                return settings;
+            }
+        }
+    }
+    LauncherSettings::default()
+}
+
+fn save_settings(settings: &LauncherSettings) -> Result<(), String> {
+    let path = get_settings_path();
+    
+    // Ensure parent directory exists
+    if let Some(parent) = path.parent() {
+        fs::create_dir_all(parent).map_err(|e| e.to_string())?;
+    }
+    
+    let json = serde_json::to_string_pretty(settings).map_err(|e| e.to_string())?;
+    fs::write(&path, json).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+// ============================================
+// STEAM GAME STRUCTURES
+// ============================================
 
 #[derive(Debug, Serialize)]
 struct SteamGame {
@@ -653,6 +722,61 @@ async fn open_launcher(launcher_name: String) -> Result<(), String> {
     }
 }
 
+// ============================================
+// LAUNCHER DETECTION COMMANDS
+// ============================================
+
+#[tauri::command]
+async fn auto_detect_launchers() -> Result<Vec<DetectedLauncher>, String> {
+    Ok(launcher_detector::auto_detect_all_launchers())
+}
+
+#[tauri::command]
+async fn save_custom_launcher_path(launcher_id: String, path: String) -> Result<(), String> {
+    let mut settings = load_settings();
+    settings.launcher_paths.insert(launcher_id, Some(path));
+    save_settings(&settings)?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn skip_launcher(launcher_id: String) -> Result<(), String> {
+    let mut settings = load_settings();
+    if !settings.skipped_launchers.contains(&launcher_id) {
+        settings.skipped_launchers.push(launcher_id);
+    }
+    save_settings(&settings)?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn complete_setup_wizard() -> Result<(), String> {
+    let mut settings = load_settings();
+    settings.wizard_completed = true;
+    settings.last_scan = Some(chrono::Utc::now().to_rfc3339());
+    save_settings(&settings)?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn reset_setup_wizard() -> Result<(), String> {
+    let mut settings = load_settings();
+    settings.wizard_completed = false;
+    save_settings(&settings)?;
+    Ok(())
+}
+
+#[tauri::command]
+async fn get_launcher_settings() -> Result<LauncherSettings, String> {
+    Ok(load_settings())
+}
+
+#[tauri::command]
+async fn save_launcher_settings(settings: LauncherSettings) -> Result<(), String> {
+    save_settings(&settings)?;
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
@@ -669,7 +793,15 @@ pub fn run() {
         get_steam_users, 
         switch_steam_account,
         get_launcher_files,
-        toggle_file_rule
+        toggle_file_rule,
+        // New launcher detection commands
+        auto_detect_launchers,
+        save_custom_launcher_path,
+        skip_launcher,
+        complete_setup_wizard,
+        reset_setup_wizard,
+        get_launcher_settings,
+        save_launcher_settings
     ])
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
