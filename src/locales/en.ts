@@ -79,6 +79,16 @@ export const en = {
             reset_desc: "This will clear all saved data (language preference, cached statuses) and restart the app.",
             reset_btn: "RESET APP",
             reset_confirm: "Are you sure? This will reload the application."
+        },
+        launcher_settings: {
+            title: "Launcher Settings",
+            desc: "Use the wizard to re-detect launcher paths or add them manually",
+            reset_wizard: "Restart Wizard",
+            resetting: "Resetting...",
+            tip: "Tip:",
+            tip_desc: "The wizard automatically scans all launchers. You can manually enter paths for launchers that are not found.",
+            reset_success: "Wizard has been reset! Please restart the application.",
+            reset_error: "Error: "
         }
     },
     notes: {
@@ -98,5 +108,37 @@ export const en = {
         export: "Export Notes (Backup)",
         import: "Import Notes",
         data_loss_warning: "IMPORTANT: Since data is stored ONLY on this computer, remember to EXPORT your notes before formatting your PC or uninstalling this app, otherwise they will be lost forever!"
+    },
+    wizard: {
+        title: "Initial Setup",
+        subtitle: "Your launchers have been automatically detected",
+        scanning: "Scanning launchers...",
+        scanning_desc: "Searching for Steam, Epic Games, Ubisoft, EA and Rockstar launchers",
+        all_found: "All launchers found!",
+        all_found_desc: "You will be redirected to the main screen in 3 seconds",
+        select_exe: "Select {0} launcher executable",
+        status: {
+            found: "Found",
+            not_found: "Not Found",
+            skipped: "Not Installed"
+        },
+        actions: {
+            show_location: "Show Location",
+            not_installed: "Not Installed",
+            complete: "Complete Setup",
+            skip: "Skip for Now (You can reopen from Settings)",
+            some_missing: "Some Launchers Missing"
+        },
+        warning: {
+            title: "Warning",
+            message: "Some launchers were not found or skipped!",
+            settings_info: "You can restart the wizard from <strong>Settings → Launcher Settings</strong> to manually add missing launchers.",
+            continue: "Got it, Continue",
+            go_back: "Go Back"
+        },
+        info: {
+            tip: "Tip:",
+            settings_hint: "If you want to add any launcher later, you can restart the wizard from <strong>Settings → Launcher Settings</strong>."
+        }
     }
 };

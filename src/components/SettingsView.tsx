@@ -18,11 +18,11 @@ export default function SettingsView() {
         try {
             setResetting(true);
             await invoke('reset_setup_wizard');
-            alert('Sihirbaz sıfırlandı! Uygulamayı yeniden başlatın.');
+            alert(strings.settings.launcher_settings.reset_success);
             location.reload();
         } catch (error) {
             console.error('Failed to reset wizard:', error);
-            alert('Hata: ' + error);
+            alert(strings.settings.launcher_settings.reset_error + error);
         } finally {
             setResetting(false);
         }
@@ -49,9 +49,9 @@ export default function SettingsView() {
                             <RefreshCw className="w-6 h-6 text-primary" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-white mb-1">🎮 Launcher Settings</h2>
+                            <h2 className="text-xl font-bold text-white mb-1">🎮 {strings.settings.launcher_settings.title}</h2>
                             <p className="text-gray-400 text-sm">
-                                Launcher yollarını yeniden tespit etmek veya manuel olarak eklemek için sihirbazı kullanın
+                                {strings.settings.launcher_settings.desc}
                             </p>
                         </div>
                     </div>
@@ -61,12 +61,11 @@ export default function SettingsView() {
                         disabled={resetting}
                         className="px-6 py-3 rounded-xl bg-primary/20 hover:bg-primary hover:text-white text-primary border border-primary/50 transition-all font-bold tracking-wider hover:shadow-[0_0_20px_-5px_rgba(var(--color-primary),0.5)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {resetting ? '⏳ Sıfırlanıyor...' : '🔄 Sihirbazı Tekrar Başlat'}
+                        {resetting ? `⏳ ${strings.settings.launcher_settings.resetting}` : `🔄 ${strings.settings.launcher_settings.reset_wizard}`}
                     </button>
 
                     <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg text-sm text-gray-300">
-                        <strong className="text-blue-400">İpucu:</strong> Sihirbaz, tüm launcher'ları otomatik olarak tarar.
-                        Bulunamayan launcher'lar için manuel yol girişi yapabilirsiniz.
+                        <strong className="text-blue-400">{strings.settings.launcher_settings.tip}</strong> {strings.settings.launcher_settings.tip_desc}
                     </div>
                 </section>
 

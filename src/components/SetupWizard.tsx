@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { open } from '@tauri-apps/plugin-dialog';
 import { ShieldAlert, CheckCircle, AlertCircle, XCircle, Settings as SettingsIcon } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface DetectedLauncher {
     id: string;
@@ -15,6 +16,7 @@ interface SetupWizardProps {
 }
 
 export default function SetupWizard({ onComplete }: SetupWizardProps) {
+    const { strings } = useLanguage();
     const [scanning, setScanning] = useState(true);
     const [launchers, setLaunchers] = useState<DetectedLauncher[]>([]);
     const [showSkipWarning, setShowSkipWarning] = useState(false);
@@ -53,7 +55,7 @@ export default function SetupWizard({ onComplete }: SetupWizardProps) {
                     name: 'Executables',
                     extensions: ['exe']
                 }],
-                title: `${id} launcher dosyasını seçin`
+                title: strings.wizard.select_exe.replace('{0}', id)
             });
 
             if (selected) {
@@ -118,13 +120,10 @@ export default function SetupWizard({ onComplete }: SetupWizardProps) {
                 </div>
 
                 <h2 className="mt-8 text-3xl font-bold text-white tracking-wide">
-                    {allFound ? '✅ Tüm launcher\'lar bulundu!' : '🔍 Launcher\'lar taranıyor...'}
+                    {allFound ? `✅ ${strings.wizard.all_found}` : `🔍 ${strings.wizard.scanning}`}
                 </h2>
                 <p className="mt-2 text-gray-400 text-center max-w-md">
-                    {allFound
-                        ? '3 saniye içinde otomatik olarak ana ekrana yönlendirileceksiniz'
-                        : 'Steam, Epic Games, Ubisoft, EA ve Rockstar launcher\'ları aranıyor'
-                    }
+                    {allFound ? strings.wizard.all_found_desc : strings.wizard.scanning_desc}
                 </p>
 
                 {allFound && (
@@ -149,16 +148,14 @@ export default function SetupWizard({ onComplete }: SetupWizardProps) {
                 <div className="max-w-md w-full bg-surface border border-yellow-500/30 rounded-2xl p-8">
                     <div className="flex items-center gap-3 mb-4">
                         <AlertCircle className="w-12 h-12 text-yellow-500" />
-                        <h2 className="text-2xl font-bold text-white">⚠️ Uyarı</h2>
+                        <h2 className="text-2xl font-bold text-white">⚠️ {strings.wizard.warning.title}</h2>
                     </div>
 
                     <p className="text-gray-300 mb-2">
-                        Bazı launcher'lar bulunamadı veya atlandı!
+                        {strings.wizard.warning.message}
                     </p>
 
-                    <p className="text-gray-400 text-sm mb-6">
-                        <strong>Ayarlar → Launcher Settings</strong> kısmından sihirbazı tekrar başlatabilir
-                        ve eksik launcher'ları manuel olarak ekleyebilirsiniz.
+                    <p className="text-gray-400 text-sm mb-6" dangerouslySetInnerHTML={{ __html: strings.wizard.warning.settings_info }}>
                     </p>
 
                     <div className="flex gap-3">
@@ -166,13 +163,13 @@ export default function SetupWizard({ onComplete }: SetupWizardProps) {
                             onClick={confirmSkip}
                             className="flex-1 py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-bold rounded-xl transition-all"
                         >
-                            Anladım, Devam Et
+                            {strings.wizard.warning.continue}
                         </button>
                         <button
                             onClick={() => setShowSkipWarning(false)}
                             className="flex-1 py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all"
                         >
-                            Geri Dön
+                            {strings.wizard.warning.go_back}
                         </button>
                     </div>
                 </div>
@@ -189,9 +186,9 @@ export default function SetupWizard({ onComplete }: SetupWizardProps) {
                     <div className="inline-flex items-center justify-center w-20 h-20 bg-primary/20 rounded-2xl mb-4">
                         <ShieldAlert className="w-10 h-10 text-primary" />
                     </div>
-                    <h1 className="text-4xl font-bold text-white mb-2">🎮 İlk Kurulum</h1>
+                    <h1 className="text-4xl font-bold text-white mb-2">🎮 {strings.wizard.title}</h1>
                     <p className="text-gray-400 text-lg">
-                        Launcher'larınız otomatik olarak tespit edildi
+                        {strings.wizard.subtitle}
                     </p>
                 </div>
 
@@ -204,21 +201,21 @@ export default function SetupWizard({ onComplete }: SetupWizardProps) {
                                 bgColor: 'bg-green-500/10',
                                 borderColor: 'border-green-500/30',
                                 emoji: '✅',
-                                label: 'Bulundu'
+                                label: strings.wizard.status.found
                             },
                             NotFound: {
                                 icon: <AlertCircle className="w-8 h-8 text-yellow-500" />,
                                 bgColor: 'bg-yellow-500/10',
                                 borderColor: 'border-yellow-500/30',
                                 emoji: '❓',
-                                label: 'Bulunamadı'
+                                label: strings.wizard.status.not_found
                             },
                             UserSkipped: {
                                 icon: <XCircle className="w-8 h-8 text-gray-500" />,
                                 bgColor: 'bg-gray-500/10',
                                 borderColor: 'border-gray-500/30',
                                 emoji: '❌',
-                                label: 'Kurulu Değil'
+                                label: strings.wizard.status.skipped
                             }
                         };
 
@@ -256,13 +253,13 @@ export default function SetupWizard({ onComplete }: SetupWizardProps) {
                                                 onClick={() => selectManualPath(launcher.id)}
                                                 className="px-4 py-2 bg-primary hover:bg-primary/80 text-white rounded-lg text-sm font-bold transition-all whitespace-nowrap"
                                             >
-                                                📁 Konumunu Göster
+                                                📁 {strings.wizard.actions.show_location}
                                             </button>
                                             <button
                                                 onClick={() => skipLauncher(launcher.id)}
                                                 className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg text-sm font-bold transition-all"
                                             >
-                                                Kurulu Değil
+                                                {strings.wizard.actions.not_installed}
                                             </button>
                                         </div>
                                     )}
@@ -282,14 +279,14 @@ export default function SetupWizard({ onComplete }: SetupWizardProps) {
                             : 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
                             }`}
                     >
-                        {allResolved ? '✅ Kurulumu Tamamla' : '⏳ Bazı Launcher\'lar Eksik'}
+                        {allResolved ? `✅ ${strings.wizard.actions.complete}` : `⏳ ${strings.wizard.actions.some_missing}`}
                     </button>
 
                     <button
                         onClick={handleSkipWizard}
                         className="w-full py-3 text-gray-400 hover:text-white text-sm transition-colors"
                     >
-                        ⏭️ Şimdilik Atla (Settings'ten tekrar açabilirsiniz)
+                        ⏭️ {strings.wizard.actions.skip}
                     </button>
                 </div>
 
@@ -298,9 +295,7 @@ export default function SetupWizard({ onComplete }: SetupWizardProps) {
                     <div className="flex gap-3">
                         <SettingsIcon className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
                         <div className="text-sm text-gray-300">
-                            <strong className="text-white">İpucu:</strong> Herhangi bir launcher'ı daha sonra
-                            eklemek isterseniz, <strong className="text-blue-400">Ayarlar → Launcher Settings</strong>
-                            kısmından sihirbazı tekrar başlatabilirsiniz.
+                            <strong className="text-white">{strings.wizard.info.tip}</strong> <span dangerouslySetInnerHTML={{ __html: strings.wizard.info.settings_hint }}></span>
                         </div>
                     </div>
                 </div>

@@ -79,6 +79,16 @@ export const tr = {
             reset_desc: "Bu işlem kayıtlı tüm verileri (dil tercihi, önbellek) silecek ve uygulamayı yeniden başlatacaktır.",
             reset_btn: "SIFIRLA",
             reset_confirm: "Emin misiniz? Uygulama yeniden başlatılacak."
+        },
+        launcher_settings: {
+            title: "Launcher Ayarları",
+            desc: "Launcher yollarını yeniden tespit etmek veya manuel olarak eklemek için sihirbazı kullanın",
+            reset_wizard: "Sihirbazı Tekrar Başlat",
+            resetting: "Sıfırlanıyor...",
+            tip: "İpucu:",
+            tip_desc: "Sihirbaz, tüm launcher'ları otomatik olarak tarar. Bulunamayan launcher'lar için manuel yol girişi yapabilirsiniz.",
+            reset_success: "Sihirbaz sıfırlandı! Uygulamayı yeniden başlatın.",
+            reset_error: "Hata: "
         }
     },
     notes: {
@@ -98,5 +108,37 @@ export const tr = {
         export: "Notları Dışa Aktar (Yedekle)",
         import: "Notları İçe Aktar",
         data_loss_warning: "ÖNEMLİ: Veriler SADECE bu bilgisayarda saklandığı için, bilgisayara format atmadan veya uygulamayı silmeden önce notlarınızı DIŞA AKTARMAYI unutmayın, aksi takdirde sonsuza kadar kaybolurlar!"
+    },
+    wizard: {
+        title: "İlk Kurulum",
+        subtitle: "Launcher'larınız otomatik olarak tespit edildi",
+        scanning: "Launcher'lar taranıyor...",
+        scanning_desc: "Steam, Epic Games, Ubisoft, EA ve Rockstar launcher'ları aranıyor",
+        all_found: "Tüm launcher'lar bulundu!",
+        all_found_desc: "3 saniye içinde otomatik olarak ana ekrana yönlendirileceksiniz",
+        select_exe: "{0} launcher dosyasını seçin",
+        status: {
+            found: "Bulundu",
+            not_found: "Bulunamadı",
+            skipped: "Kurulu Değil"
+        },
+        actions: {
+            show_location: "Konumunu Göster",
+            not_installed: "Kurulu Değil",
+            complete: "Kurulumu Tamamla",
+            skip: "Şimdilik Atla (Settings'ten tekrar açabilirsiniz)",
+            some_missing: "Bazı Launcher'lar Eksik"
+        },
+        warning: {
+            title: "Uyarı",
+            message: "Bazı launcher'lar bulunamadı veya atlandı!",
+            settings_info: "<strong>Ayarlar → Launcher Settings</strong> kısmından sihirbazı tekrar başlatabilir ve eksik launcher'ları manuel olarak ekleyebilirsiniz.",
+            continue: "Anladım, Devam Et",
+            go_back: "Geri Dön"
+        },
+        info: {
+            tip: "İpucu:",
+            settings_hint: "Herhangi bir launcher'ı daha sonra eklemek isterseniz, <strong>Ayarlar → Launcher Settings</strong> kısmından sihirbazı tekrar başlatabilirsiniz."
+        }
     }
 };
