@@ -6,7 +6,6 @@ use std::process::Command;
 #[cfg(target_os = "windows")]
 use std::os::windows::process::CommandExt;
 use serde::{Deserialize, Serialize};
-use chrono;
 
 // Launcher Detection Module
 mod launcher_detector;
@@ -753,7 +752,7 @@ async fn skip_launcher(launcher_id: String) -> Result<(), String> {
 async fn complete_setup_wizard() -> Result<(), String> {
     let mut settings = load_settings();
     settings.wizard_completed = true;
-    settings.last_scan = Some(chrono::Utc::now().to_rfc3339());
+    settings.last_scan = Some("completed".to_string());
     save_settings(&settings)?;
     Ok(())
 }
