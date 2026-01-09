@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    launcher_lib::run()
+    games_launchers_firewall_control_lib::run()
 }
