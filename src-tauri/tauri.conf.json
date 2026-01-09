@@ -4,24 +4,13 @@
   "version": "0.1.0",
   "identifier": "com.akmas.launcher",
   "build": {
-    "beforeDevCommand": "npm run dev",
+    "beforeDevCommand": "npm run vite",
     "devUrl": "http://localhost:1421",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
   },
   "app": {
     "windows": [
-      {
-        "label": "splash",
-        "title": "Loading",
-        "url": "splash.html",
-        "width": 450,
-        "height": 400,
-        "decorations": false,
-        "center": true,
-        "resizable": false,
-        "alwaysOnTop": true
-      },
       {
         "label": "main",
         "title": "Gamer Hub",
@@ -30,7 +19,7 @@
         "height": 800,
         "minWidth": 800,
         "minHeight": 600,
-        "visible": false,
+        "visible": true,
         "resizable": true,
         "decorations": true,
         "center": true
